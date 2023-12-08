@@ -22,14 +22,6 @@ let rec generate_number_list acc str start_x x y = function
       let acc = if String.length str > 0 then (start_x, y, str) :: acc else acc in
       generate_number_list acc (Char.escaped c) nx nx ny tail)
 ;;
-(* let print_tuple (a, b) = *)
-(*   Printf.printf "(%d, %d)" a b *)
-
-(* let print_list_of_tuples lst = *)
-(*   List.iter  lst ~f:(fun tuple -> print_tuple tuple; print_string "; "); *)
-(*   Printf.printf "\n"; *)
-(*   () *)
-
 
 module Part_1 = struct
   let run (input : string) : (string, string) result =
@@ -50,7 +42,6 @@ module Part_1 = struct
       |> List.map ~f:(fun (x, y) -> List.map neighborhood ~f:(fun (nx, ny) -> nx + x, ny + y))
       |> List.concat
     in
-    (* print_list_of_tuples valid_pos; *)
     (* The numbers *)
     let nums =
       List.filter values ~f:(fun (_x, _y, c) -> is_number c)
@@ -62,11 +53,7 @@ module Part_1 = struct
     (* Filter out the invalid number string *)
     let value =
       List.filter_map numbers_list ~f:(fun (x, y, s) ->
-        let valid = List.exists valid_pos ~f:(fun (vx, vy) ->
-              if x <= vx && vx <= x + String.length s && vy = y then
-                Printf.printf "Value pos %d %d: %d Res %B %B %B\n" x (x + String.length s)  vx (x <= vx) (vx <= (x + String.length s)) (vy = y);
-              x <= vx && vx <= x + String.length s && vy = y
-            ) in
+        let valid = List.exists valid_pos ~f:(fun (vx, vy) -> x <= vx && vx <= x + (String.length s - 1) && vy = y) in
         match valid with
         | true ->
           (* Printf.printf "Valid pos %d %d, %s\n" x y s; *)
