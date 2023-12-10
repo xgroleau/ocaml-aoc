@@ -12,4 +12,4 @@
 (library
  (name problem)
  (modules problem)
- (libraries core))
+ (libraries core str))
