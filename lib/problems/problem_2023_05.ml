@@ -57,15 +57,18 @@ end
 module Part_2 = struct
   let run (input : string) : (string, string) result =
     let sections = Str.split (Str.regexp "\n\n+") input in
-    let seeds =
+    let seeds : int Sequence.t list =
       parse_seeds sections
       |> split_into_pairs
-      |> List.map ~f:(fun (init, len) -> List.init len ~f:(fun idx -> idx + init))
-      |> List.concat
+      |> List.map ~f:(fun (init, len) ->
+        Sequence.range init (init + len) ~start:`inclusive ~stop:`inclusive)
     in
     let maps = List.tl_exn sections |> List.map ~f:parse_map in
     let result =
-      List.map seeds ~f:(fun seed -> map_values seed maps)
+      List.map seeds ~f:(fun seeds_range ->
+        Sequence.map seeds_range ~f:(fun seed -> map_values seed maps)
+        |> Sequence.min_elt ~compare:Int.compare
+        |> Option.value_exn)
       |> List.min_elt ~compare:Int.compare
       |> Option.value_exn
       |> string_of_int
